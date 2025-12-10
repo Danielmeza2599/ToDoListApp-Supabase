@@ -9,7 +9,7 @@ export default async function Home() {
   //  Check if the user is logged in
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) {
-    redirect('/login')
+    redirect('/auth/login')
   }
 
   //Get tasks (Ordered by date)
