@@ -13,10 +13,15 @@ export async function addTodo(formData: FormData) {
 
   const title = formData.get('title') as string
 
-  await supabase.from('todos').insert({ 
+  const { error } = await supabase.from('todos').insert({ 
     title, 
     user_id: user.id 
   })
+
+  if (error) {
+    console.error('Error adding todo:', error)
+    throw error
+  }
 
   revalidatePath('/') // UI is refreshed
 }

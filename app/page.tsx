@@ -33,7 +33,7 @@ export default async function Home() {
           <input 
             name="title" 
             type="text" 
-            placeholder="Nueva tarea..." 
+            placeholder="New task..." 
             required
             className="flex-1 p-3 rounded bg-gray-800 border border-gray-700 text-white"
           />
