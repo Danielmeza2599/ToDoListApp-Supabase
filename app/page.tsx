@@ -2,6 +2,7 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { addTodo, signOut } from './actions'
 import TodoItem from './components/todo-item'
+import Chatbot from './components/chatbot'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -52,6 +53,7 @@ export default async function Home() {
           )}
         </div>
       </div>
+      <Chatbot />
     </main>
   )
 }
