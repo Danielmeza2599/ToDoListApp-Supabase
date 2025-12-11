@@ -1,8 +1,10 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
 
+type CookieToSet = { name: string; value: string; options?: any }
+
 export async function middleware(request: NextRequest) {
-  // Verificar variables de entorno
+  // Check environment variables
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
   const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
 
@@ -34,8 +36,10 @@ export async function middleware(request: NextRequest) {
           getAll() {
             return request.cookies.getAll()
           },
-          setAll(cookiesToSet) {
-            cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
+          setAll(cookiesToSet: CookieToSet[]) {
+            cookiesToSet.forEach(({ name, value }) => 
+              request.cookies.set(name, value)
+            )
             response = NextResponse.next({
               request: {
                 headers: request.headers,
@@ -55,8 +59,8 @@ export async function middleware(request: NextRequest) {
     } = await supabase.auth.getUser()
 
     // If there is an authentication error but not critical, continue
-    if (error && !error.message.includes('JWT') && !error.message.includes('session')) {
-      console.error('⚠️  Error en middleware al obtener usuario:', error.message)
+    if (error !== null && error.message && !error.message.includes('JWT') && !error.message.includes('session')) {
+      console.error('⚠️  Error in middleware to get user:', error.message)
     }
 
     // If the user is not authenticated and is trying to access the root, redirect to /auth/login
@@ -69,7 +73,7 @@ export async function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/', request.url))
     }
   } catch (error) {
-    console.error('❌ Error inesperado en middleware:', error)
+    console.error('❌ Unexpected error in middleware:', error)
     // If there is an error and we are trying to access login, allow access
     if (request.nextUrl.pathname.startsWith('/auth/login')) {
       return NextResponse.next()
@@ -80,6 +84,7 @@ export async function middleware(request: NextRequest) {
 
   return response
 }
+
 
 export const config = {
   matcher: [
